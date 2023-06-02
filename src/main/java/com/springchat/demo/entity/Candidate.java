@@ -1,9 +1,11 @@
 package com.springchat.demo.entity;
 
+import com.springchat.demo.llm.integ.LlmTextGetter;
+import com.springchat.demo.llm.integ.TextUpdateListener;
 import jakarta.persistence.*;
 
 @Entity
-@EntityListeners({ResumeUpdateListener.class})
+@EntityListeners({TextUpdateListener.class})
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,6 +60,7 @@ public class Candidate {
         this.email = email;
     }
 
+    @LlmTextGetter
     public String getResume() {
         return resume;
     }
