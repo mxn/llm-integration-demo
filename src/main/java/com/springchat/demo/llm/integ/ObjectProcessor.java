@@ -16,12 +16,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class ObjectProcessor {
-    public static final String DESTINATION_NAME = "llmProcessing";
+    private final LlmConfig llmConfig;
     static final String ENTITY_CLASS_KEY = "entityClass";
     static final String ID_KEY = "id";
     static final String TEXT_KEY = "text";
     private static JmsTemplate jmsTemplate;
     private final Logger logger = LoggerFactory.getLogger(ObjectProcessor.class);
+
+    public ObjectProcessor(LlmConfig llmConfig) {
+        this.llmConfig = llmConfig;
+    }
 
     private static String getText(Object candidate) {
         return Arrays.stream(candidate.getClass().getDeclaredFields()) //
@@ -66,12 +70,13 @@ public class ObjectProcessor {
     }
 
     public void update(Object object) {
-        jmsTemplate.convertAndSend(DESTINATION_NAME, toMap(object));
+        jmsTemplate.convertAndSend(llmConfig.getDestinationName(), toMap(object));
     }
 
 
-    @JmsListener(destination = DESTINATION_NAME)
+    @JmsListener(destination = "#{llmConfig.destinationName}")
     void onMessage(Map<String, Object> message) {
         logger.warn("got {}: {} {}", message.get(ENTITY_CLASS_KEY), message.get(ID_KEY), message.get(TEXT_KEY));
     }
+
 }
