@@ -1,8 +1,8 @@
 package com.springchat.demo.entity;
 
-import com.springchat.demo.llm.integ.LlmTextGetter;
-import com.springchat.demo.llm.integ.TextUpdateListener;
 import jakarta.persistence.*;
+import org.novomax.llm.integration.spring.LlmTextGetter;
+import org.novomax.llm.integration.spring.TextUpdateListener;
 
 @Entity
 @EntityListeners({TextUpdateListener.class})

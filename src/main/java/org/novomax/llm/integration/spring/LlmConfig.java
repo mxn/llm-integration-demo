@@ -1,4 +1,4 @@
-package com.springchat.demo.llm.integ;
+package org.novomax.llm.integration.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

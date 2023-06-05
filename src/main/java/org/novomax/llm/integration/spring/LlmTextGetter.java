@@ -1,4 +1,4 @@
-package com.springchat.demo.llm.integ;
+package org.novomax.llm.integration.spring;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
