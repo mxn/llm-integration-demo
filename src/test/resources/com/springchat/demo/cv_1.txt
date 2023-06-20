@@ -1,0 +1,56 @@
+Emily Johnson
+456 Oak Street, City, State, ZIP
+Phone: (555) 123-4567
+Email: emily.johnson@email.com
+
+Objective:
+Results-driven and detail-oriented professional seeking a challenging position in the field of software development, leveraging my strong programming skills and problem-solving abilities.
+
+Education:
+Bachelor of Science in Computer Science
+XYZ University, City, State
+Graduated: May 20XX
+
+Skills:
+
+    Proficient in programming languages: Python, Java, C++
+    Web development: HTML, CSS, JavaScript
+    Database management: SQL
+    Object-oriented design and development
+    Software testing and debugging
+    Version control systems: Git
+    Strong problem-solving and analytical skills
+    Excellent communication and teamwork abilities
+
+Experience:
+Software Developer Intern
+ABC Tech Solutions, City, State
+June 20XX - August 20XX
+
+    Assisted in the development and maintenance of web applications using Python and Django framework
+    Collaborated with a cross-functional team to deliver high-quality software solutions
+    Conducted software testing and participated in code reviews to ensure code quality and performance
+    Researched and implemented best practices in software development and version control
+
+IT Support Specialist
+DEF Company, City, State
+May 20XX - Present
+
+    Provide technical support to end-users, troubleshooting software and hardware issues
+    Install, configure, and maintain computer systems, networks, and peripherals
+    Manage user accounts and permissions in Active Directory
+    Assist in the development and implementation of IT policies and procedures
+    Conduct user training sessions on software and hardware usage
+
+Projects:
+
+    Developed a web-based inventory management system using Python and Django framework, resulting in a 20% increase in efficiency and accuracy of inventory tracking
+    Collaborated with a team to create a mobile app prototype using React Native, showcasing strong problem-solving and teamwork skills
+
+Certifications:
+
+    Certified Python Developer (CPD)
+    Oracle Certified Associate (OCA) - Java SE Programmer
+
+References:
+Available upon request

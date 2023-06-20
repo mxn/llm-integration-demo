@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      "optional:file:./.secret.properties"
   datasource:
     url: jdbc:h2:mem:mydb
     username: sa
@@ -6,3 +9,18 @@ spring:
     driverClassName: org.h2.Driver
 vaadin:
   url-mapping: /gui/*
+org:
+  novomax:
+    llm:
+      integration:
+        spring:
+          openai:
+            urlExternalEmbedService: https://api.openai.com/v1/embeddings
+logging:
+  level:
+    org:
+      apache:
+        hc:
+          client5: debug
+
+
