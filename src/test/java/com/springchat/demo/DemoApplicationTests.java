@@ -1,11 +1,13 @@
 package com.springchat.demo;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.novomax.llm.integration.spring.CosineDistanceFunction;
 import org.novomax.llm.integration.spring.LlmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = TestApp.class)
@@ -19,19 +21,21 @@ class DemoApplicationTests {
 
     @Test
     void openAiRequest() {
-        String text = "    Proficient in programming languages: Python, Java, C++\n" +
-                "    Web development: HTML, CSS, JavaScript\n" +
-                "    Database management: SQL\n" +
-                "    Object-oriented design and development\n" +
-                "    Software testing and debugging\n" +
-                "    Version control systems: Git\n" +
-                "    Strong problem-solving and analytical skills\n" +
-                "    Excellent communication and teamwork abilities\n";
+        String text = """
+                    Proficient in programming languages: Python, Java, C++
+                    Web development: HTML, CSS, JavaScript
+                    Database management: SQL
+                    Object-oriented design and development
+                    Software testing and debugging
+                    Version control systems: Git
+                    Strong problem-solving and analytical skills
+                    Excellent communication and teamwork abilities
+                """;
         double[] embedVector1 = llmService.getEmbeddingVector(text);
         double[] embedVector2 = llmService.getEmbeddingVector(text + " Art Designer");
         double similarity = CosineDistanceFunction.cosineSimilarity(embedVector2, embedVector1);
-        Assert.assertNotNull(embedVector1);
-        Assert.assertNotNull(embedVector2);
-        Assert.assertTrue(similarity > 0.95);
+        assertNotNull(embedVector1);
+        assertNotNull(embedVector2);
+        assertTrue(similarity > 0.95);
     }
 }
