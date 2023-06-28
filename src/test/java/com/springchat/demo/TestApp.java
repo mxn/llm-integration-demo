@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
 
 @SpringBootApplication()
-//@EnableJpaRepositories(basePackages = {"com.springchat.demo"})
 class TestApp {
 
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
@@ -22,6 +22,7 @@ class TestApp {
     }
 
     @Bean
+    @Profile("dev")
     CommandLineRunner init() {
         candidateRepository.saveAll( //
                 Arrays.asList(new Candidate("Max", "Nov"), //

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import static org.novomax.llm.integration.spring.openai.Constants.LLM_OPENAI_QUALIFIER;
+
 @Service
 public class LlmServiceOpenAi implements LlmService {
 
@@ -16,7 +18,7 @@ public class LlmServiceOpenAi implements LlmService {
     public LlmServiceOpenAi(//
                             @Value("${org.novomax.llm.integration.spring.openai.urlExternalEmbedService}")
                             String urlExternalEmbedService,
-                            @Qualifier("openAi")
+                            @Qualifier(LLM_OPENAI_QUALIFIER)
                             RestTemplate restTemplateOpenAi) {
         this.urlExternalEmbedService = urlExternalEmbedService;
         this.restTemplateOpenAi = restTemplateOpenAi;

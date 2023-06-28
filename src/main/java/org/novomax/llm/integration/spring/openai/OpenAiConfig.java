@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.novomax.llm.integration.spring.openai.Constants.LLM_OPENAI_QUALIFIER;
+
 @Configuration
 public class OpenAiConfig {
     private final byte[] apiKeyBytes;
@@ -19,7 +21,7 @@ public class OpenAiConfig {
     }
 
     @Bean
-    @Qualifier("openAi")
+    @Qualifier(LLM_OPENAI_QUALIFIER)
     RestTemplate restTemplateOpenAi() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
