@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -111,17 +110,6 @@ public class LuceneStorage implements VectorStorage {
             return indexSearcherAtomicReference.get();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @PreDestroy
-    void closeResources() {
-        if (indexWriterAtomicReference.get() != null) {
-            try {
-                indexWriterAtomicReference.get().close();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-            }
         }
     }
 
