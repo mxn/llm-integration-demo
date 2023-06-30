@@ -18,13 +18,21 @@ import java.util.stream.Collectors;
 public class ObjectProcessor {
     private final LlmConfig llmConfig;
     static final String ENTITY_CLASS_KEY = "entityClass";
-    static final String ID_KEY = "id";
+    static final String ENTITY_ID_KEY = "id";
     static final String TEXT_KEY = "text";
+
+    static final String ACTION_KEY = "action";
+
     private static JmsTemplate jmsTemplate;
     private final Logger logger = LoggerFactory.getLogger(ObjectProcessor.class);
+    private final VectorStorage vectorStorage;
 
-    public ObjectProcessor(LlmConfig llmConfig) {
+    private final LlmService llmService;
+
+    public ObjectProcessor(LlmConfig llmConfig, VectorStorage vectorStorage, LlmService llmService) {
         this.llmConfig = llmConfig;
+        this.vectorStorage = vectorStorage;
+        this.llmService = llmService;
     }
 
     private static String getText(Object candidate) {
@@ -58,25 +66,41 @@ public class ObjectProcessor {
         ObjectProcessor.jmsTemplate = jmsTemplate;
     }
 
-    Map<String, Object> toMap(final Object candidate) {
-        Map<String, Object> res = new HashMap<>();
+    Map<String, String> toMap(final Object candidate, Action action) {
+        Map<String, String> res = new HashMap<>();
         res.put(ENTITY_CLASS_KEY, candidate.getClass().getName());
         Object idValue = getIdValue(candidate);
-        //candidate.§
-        res.put(ID_KEY, idValue);
+        res.put(ENTITY_ID_KEY, idValue.toString());
         String text = getText(candidate);
         res.put(TEXT_KEY, text);
+        res.put(ACTION_KEY, action.name());
         return res;
     }
 
-    public void update(Object object) {
-        jmsTemplate.convertAndSend(llmConfig.getDestinationName(), toMap(object));
+    public void upcert(Object object) {
+        jmsTemplate.convertAndSend(llmConfig.getDestinationName(), toMap(object, Action.UPSERT));
     }
 
 
     @JmsListener(destination = "#{llmConfig.destinationName}")
-    void onMessage(Map<String, Object> message) {
-        logger.warn("got {}: {} {}", message.get(ENTITY_CLASS_KEY), message.get(ID_KEY), message.get(TEXT_KEY));
+    void onMessage(Map<String, String> message) {
+        logger.debug("got {}: {} {} {}", message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY),
+                message.get(TEXT_KEY), message.get(ACTION_KEY));
+        switch (Action.valueOf(message.get(ACTION_KEY))) {
+            case UPSERT -> {
+                if (message.get(TEXT_KEY) == null || "".equals(message.get(TEXT_KEY).trim())) {
+                    vectorStorage.delete(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
+                } else if (vectorStorage.shouldUpdateEmbedding(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY), message.get(TEXT_KEY))) {
+                    vectorStorage.upcert(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY), message.get(TEXT_KEY),
+                            llmService.getEmbeddingVector(message.get(TEXT_KEY)));
+                }
+            }
+            case DELETE -> vectorStorage.delete(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
+
+        }
     }
 
+    public void remove(Object object) {
+        jmsTemplate.convertAndSend(llmConfig.getDestinationName(), toMap(object, Action.DELETE));
+    }
 }

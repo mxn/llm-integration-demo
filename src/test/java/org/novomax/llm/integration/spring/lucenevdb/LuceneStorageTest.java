@@ -22,20 +22,22 @@ class LuceneStorageTest {
 
     @Test
     void test() {
-        float[] arr1 = genFloatArray(1024);
+        double[] arr1 = genDoubleArray(1024);
+        String text1 = "Hello World!";
+        String text2 = "Hallo Welt!";
         String id1 = "123435";
-        testee.upcert("entity", id1, arr1);
-        testee.upcert("entity", "234556", genFloatArray(1024));
-
+        testee.upcert("entity", id1, text1, arr1);
+        testee.upcert("entity", "234556", text2, genDoubleArray(1024));
+        arr1[312] *= 0.97;
         SearchResult result = testee.search(arr1, 1).get(0);
         assertEquals(id1, result.entityId());
         assertEquals("entity", result.entityClass());
 
     }
 
-    private float[] genFloatArray(final int dim) {
-        float[] result = new float[dim];
-        IntStream.range(0, dim).forEach(i -> result[i] = (float) Math.random());
+    private double[] genDoubleArray(final int dim) {
+        double[] result = new double[dim];
+        IntStream.range(0, dim).forEach(i -> result[i] = Math.random());
         return result;
     }
 }

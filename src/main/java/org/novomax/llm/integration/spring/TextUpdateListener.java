@@ -20,9 +20,14 @@ public class TextUpdateListener {
 
     @PostPersist
     @PostUpdate
+    void onUpdateInsert(Object object) {
+        logger.debug(object + " is updated");
+        objectProcessor.upcert(object);
+    }
+
     @PostRemove
-    void onUpdate(Object object) {
+    void onRemove(Object object) {
         logger.warn(object + " is updated");
-        objectProcessor.update(object);
+        objectProcessor.remove(object);
     }
 }
