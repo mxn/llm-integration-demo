@@ -9,7 +9,7 @@ Results-driven and detail-oriented professional seeking a challenging position i
 Education:
 Bachelor of Science in Computer Science
 XYZ University, City, State
-Graduated: May 20XX
+Graduated: May 20
 
 Skills:
 
@@ -24,8 +24,8 @@ Skills:
 
 Experience:
 Software Developer Intern
-ABC Tech Solutions, City, State
-June 20XX - August 20XX
+ABC Tech Solutions, Melbourne, FL
+June 2019 - August 2020
 
     Assisted in the development and maintenance of web applications using Python and Django framework
     Collaborated with a cross-functional team to deliver high-quality software solutions
@@ -33,8 +33,8 @@ June 20XX - August 20XX
     Researched and implemented best practices in software development and version control
 
 IT Support Specialist
-DEF Company, City, State
-May 20XX - Present
+DEF Company, Orlando, FL
+September 2021 - Present
 
     Provide technical support to end-users, troubleshooting software and hardware issues
     Install, configure, and maintain computer systems, networks, and peripherals

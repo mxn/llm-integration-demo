@@ -1,6 +1,8 @@
 package org.novomax.llm.integration.spring;
 
 import jakarta.persistence.Id;
+import org.novomax.llm.integration.LlmService;
+import org.novomax.llm.integration.VectorStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,12 +39,12 @@ public class ObjectProcessor {
     }
 
     private static String getText(Object candidate) {
-        return Arrays.stream(candidate.getClass().getDeclaredFields()) //
-                .filter(field -> field.getAnnotation(LlmTextGetter.class) != null) //
-                .map(field -> {
+        return Arrays.stream(candidate.getClass().getDeclaredMethods()) //
+                .filter(method -> method.getAnnotation(LlmText.class) != null) //
+                .map(method -> {
                     try {
-                        return String.valueOf(field.get(candidate));
-                    } catch (IllegalAccessException e) {
+                        return String.valueOf(method.invoke(candidate));
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new IllegalStateException(e);
                     }
                 }) //
@@ -89,13 +92,20 @@ public class ObjectProcessor {
         switch (Action.valueOf(message.get(ACTION_KEY))) {
             case UPSERT -> {
                 if (message.get(TEXT_KEY) == null || "".equals(message.get(TEXT_KEY).trim())) {
+                    logger.debug("Delete {}:{}, text is empty", message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
                     vectorStorage.delete(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
                 } else if (vectorStorage.shouldUpdateEmbedding(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY), message.get(TEXT_KEY))) {
+                    logger.debug("Update  {}:{} vector db entry", message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
                     vectorStorage.upcert(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY), message.get(TEXT_KEY),
                             llmService.getEmbeddingVector(message.get(TEXT_KEY)));
+                } else {
+                    logger.debug("No action in vector db  {}:{}", message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
                 }
             }
-            case DELETE -> vectorStorage.delete(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
+            case DELETE -> {
+                logger.debug("Delete {}:{}: action DELETE", message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
+                vectorStorage.delete(message.get(ENTITY_CLASS_KEY), message.get(ENTITY_ID_KEY));
+            }
 
         }
     }

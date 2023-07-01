@@ -1,7 +1,7 @@
 package org.novomax.llm.integration.spring.openai;
 
 import net.minidev.json.JSONObject;
-import org.novomax.llm.integration.spring.LlmService;
+import org.novomax.llm.integration.LlmService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

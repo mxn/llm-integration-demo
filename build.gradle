@@ -5,7 +5,7 @@ plugins {
 	id 'com.vaadin' version '24.0.5'
 }
 
-group = 'com.example'
+group = 'org.novomax'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -16,6 +16,7 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
@@ -38,7 +39,7 @@ dependencies {
 // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
     // https://mvnrepository.com/artifact/org.apache.lucene/lucene-core
-    implementation 'org.apache.lucene:lucene-core:9.7.0'
+	implementation 'org.apache.lucene:lucene-core:9.7.0+knn2048-SNAPSHOT'
     testImplementation 'junit:junit:4.13.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

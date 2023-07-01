@@ -22,5 +22,6 @@ logging:
       apache:
         hc:
           client5: debug
+      novomax: debug
 
 

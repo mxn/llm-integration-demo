@@ -1,7 +1,7 @@
 package com.springchat.demo.entity;
 
 import jakarta.persistence.*;
-import org.novomax.llm.integration.spring.LlmTextGetter;
+import org.novomax.llm.integration.spring.LlmText;
 import org.novomax.llm.integration.spring.TextUpdateListener;
 
 @Entity
@@ -17,6 +17,7 @@ public class Candidate {
 
     private String email;
 
+    @Column(length = Integer.MAX_VALUE)
     private String resume;
 
     public Candidate(String firstNamem, String lastName) {
@@ -60,7 +61,7 @@ public class Candidate {
         this.email = email;
     }
 
-    @LlmTextGetter
+    @LlmText
     public String getResume() {
         return resume;
     }

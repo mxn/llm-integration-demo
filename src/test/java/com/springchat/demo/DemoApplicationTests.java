@@ -1,14 +1,21 @@
 package com.springchat.demo;
 
+import com.springchat.demo.entity.Candidate;
+import com.springchat.demo.entity.CandidateRepository;
 import org.junit.jupiter.api.Test;
+import org.novomax.llm.integration.AiService;
+import org.novomax.llm.integration.LlmService;
+import org.novomax.llm.integration.SearchResult;
 import org.novomax.llm.integration.spring.CosineDistanceFunction;
-import org.novomax.llm.integration.spring.LlmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.FileCopyUtils;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(classes = TestApp.class)
@@ -16,6 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DemoApplicationTests {
     @Autowired
     private LlmService llmService;
+
+    @Autowired
+    private CandidateRepository candidateRepository;
+
+    @Autowired
+    private AiService freeTextSearch;
+
 
     @Test
     void contextLoads() {
@@ -39,5 +53,32 @@ class DemoApplicationTests {
         assertNotNull(embedVector1);
         assertNotNull(embedVector2);
         assertTrue(similarity > 0.95);
+    }
+
+    @Test
+    void updateCv() throws InterruptedException {
+        List<Candidate> allCandidates = candidateRepository.findAll();
+        Candidate candidate1 = allCandidates.get(0);
+        candidate1.setResume(readResourceAsString("cv_it_support_1.txt"));
+        Candidate candidate2 = allCandidates.get(1);
+        candidate2.setResume(readResourceAsString("cv_mkt_specialist_2.txt"));
+        candidateRepository.saveAll(List.of(candidate1, candidate2));
+        Thread.sleep(3000);
+        List<SearchResult> results = freeTextSearch.findByFreeText("find me a SW engineer", 20);
+        SearchResult searchResult = results.get(0);
+        assertEquals(String.valueOf(candidate1.getId()), searchResult.entityId());
+        assertEquals(candidate1.getClass().getName(), searchResult.entityClass());
+        assertTrue(0.5 < results.get(0).score());
+        assertTrue(results.get(0).score() > results.get(1).score());
+    }
+
+    public String readResourceAsString(String resourceName) {
+        try {
+            byte[] fileData = FileCopyUtils.copyToByteArray(this.getClass().getResourceAsStream(resourceName));
+            return new String(fileData);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
     }
 }

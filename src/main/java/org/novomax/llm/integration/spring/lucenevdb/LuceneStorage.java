@@ -11,8 +11,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.MMapDirectory;
-import org.novomax.llm.integration.spring.SearchResult;
-import org.novomax.llm.integration.spring.VectorStorage;
+import org.novomax.llm.integration.SearchResult;
+import org.novomax.llm.integration.VectorStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.Math.min;
 
@@ -35,7 +34,6 @@ public class LuceneStorage implements VectorStorage {
     private static final String EMBEDDING_FIELD_NAME = "embedding";
     private static final String MD5_TEXT_HASH_FIELD_NAME = "md5TextHash";
     private static Logger LOGGER = LoggerFactory.getLogger(LuceneStorage.class);
-    private static AtomicReference<IndexSearcher> indexSearcherAtomicReference = new AtomicReference<>();
     private final Path luceneIndexDirectory;
 
     public LuceneStorage(
@@ -65,15 +63,14 @@ public class LuceneStorage implements VectorStorage {
 
     @Override
     public List<SearchResult> search(double[] vector, int limit) {
-
         try {
             KnnFloatVectorQuery knnFloatVectorQuery = new KnnFloatVectorQuery(EMBEDDING_FIELD_NAME, castToFloatArray(vector), limit);
-            IndexSearcher searcher = getOrCreateIndexSearcher();
+            IndexSearcher searcher = getIndexSearcher();
             TopDocs topDocs = searcher.search(knnFloatVectorQuery, limit);
             List<SearchResult> result = new ArrayList<>();
             for (int i = 0; i < min(topDocs.totalHits.value, limit); i++) {
                 Document document = searcher.getIndexReader().storedFields().document(topDocs.scoreDocs[i].doc);
-                result.add(new SearchResultImpl(document.get(ENTITY_CLASS_FIELD_NAME), document.get(ENTITY_ID_FIELD_NAME)));
+                result.add(new SearchResultImpl(document.get(ENTITY_CLASS_FIELD_NAME), document.get(ENTITY_ID_FIELD_NAME), topDocs.scoreDocs[i].score));
             }
             return result;
         } catch (IOException e) {
@@ -119,7 +116,7 @@ public class LuceneStorage implements VectorStorage {
     @Override
     public boolean shouldUpdateEmbedding(String entityClass, String entityId, String text) {
         try {
-            return getOrCreateIndexSearcher().search(makeEntityClassIdBuilder(entityClass, entityId) //
+            return getIndexSearcher().search(makeEntityClassIdBuilder(entityClass, entityId) //
                     .add(new BooleanClause(new TermQuery(new Term(MD5_TEXT_HASH_FIELD_NAME, getMd5Hash(text))), BooleanClause.Occur.MUST)) //
                     .build(), 1).scoreDocs.length == 0;
         } catch (IOException e) {
@@ -127,28 +124,25 @@ public class LuceneStorage implements VectorStorage {
         }
     }
 
-    private IndexSearcher getOrCreateIndexSearcher() {
+    private IndexSearcher getIndexSearcher() {
         try {
-            if (indexSearcherAtomicReference.get() == null) {
-                FSDirectory fsDirectory = MMapDirectory.open(luceneIndexDirectory);
-                DirectoryReader directoryReader = DirectoryReader.open(fsDirectory);
-                indexSearcherAtomicReference.set(new IndexSearcher(directoryReader));
-            }
-            return indexSearcherAtomicReference.get();
+            FSDirectory fsDirectory = MMapDirectory.open(luceneIndexDirectory);
+            DirectoryReader directoryReader = DirectoryReader.open(fsDirectory);
+            return new IndexSearcher(directoryReader);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    record SearchResultImpl(String entityClass, String entityId) implements SearchResult {
     }
 
     private Document createDocument(String entityType, String entityId, String text, float[] embedding) {
         Document document = new Document();
         document.add(new StringField(ENTITY_CLASS_FIELD_NAME, entityType, Field.Store.YES));
         document.add(new StringField(ENTITY_ID_FIELD_NAME, entityId, Field.Store.YES));
-        document.add(new StringField(MD5_TEXT_HASH_FIELD_NAME, entityId, Field.Store.YES));
+        document.add(new StringField(MD5_TEXT_HASH_FIELD_NAME, getMd5Hash(text), Field.Store.YES));
         document.add(new KnnFloatVectorField(EMBEDDING_FIELD_NAME, embedding));
         return document;
+    }
+
+    record SearchResultImpl(String entityClass, String entityId, float score) implements SearchResult {
     }
 }
