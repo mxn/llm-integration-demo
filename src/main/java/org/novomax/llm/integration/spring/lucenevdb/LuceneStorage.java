@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.Math.min;
 
@@ -35,6 +36,7 @@ public class LuceneStorage implements VectorStorage {
     private static final String MD5_TEXT_HASH_FIELD_NAME = "md5TextHash";
     private static Logger LOGGER = LoggerFactory.getLogger(LuceneStorage.class);
     private final Path luceneIndexDirectory;
+    private final AtomicReference<IndexWriter> indexWriter = new AtomicReference<>();
 
     public LuceneStorage(
             @Value("${org.novomax.llm.integration.spring.lucenevdb.uri:lucene_storage}")
@@ -80,10 +82,11 @@ public class LuceneStorage implements VectorStorage {
 
     @Override
     public void upcert(String entityClass, String entityId, String text, double[] embedding) {
-        try (IndexWriter indexWriter = createIndexWriter()) {
+        try {
+            IndexWriter indexWriter = createIndexWriter();
             deleteWithIndexWriter(indexWriter, entityClass, entityId);
             indexWriter.addDocument(createDocument(entityClass, entityId, getMd5Hash(text), castToFloatArray(embedding)));
-            indexWriter.flush();
+            indexWriter.commit();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -91,8 +94,10 @@ public class LuceneStorage implements VectorStorage {
 
     @Override
     public void delete(String entityClass, String entityId) {
-        try (IndexWriter indexWriter = createIndexWriter()) {
+        try {
+            IndexWriter indexWriter = createIndexWriter();
             deleteWithIndexWriter(indexWriter, entityClass, entityId);
+            indexWriter.commit();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -109,8 +114,11 @@ public class LuceneStorage implements VectorStorage {
     }
 
     private IndexWriter createIndexWriter() throws IOException {
-        return new IndexWriter(new MMapDirectory(luceneIndexDirectory),
-                new IndexWriterConfig());
+        if (indexWriter.get() == null || !indexWriter.get().isOpen()) {
+            indexWriter.set(new IndexWriter(new MMapDirectory(luceneIndexDirectory),
+                    new IndexWriterConfig()));
+        }
+        return indexWriter.get();
     }
 
     @Override
