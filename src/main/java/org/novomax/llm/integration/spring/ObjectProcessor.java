@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,11 +44,13 @@ public class ObjectProcessor {
                 .filter(method -> method.getAnnotation(LlmText.class) != null) //
                 .map(method -> {
                     try {
-                        return String.valueOf(method.invoke(candidate));
+                        Object methodeResult = method.invoke(candidate);
+                        return (String) methodeResult;
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new IllegalStateException(e);
                     }
                 }) //
+                .filter(Objects::nonNull) //
                 .collect(Collectors.joining("\\n\\n"));
     }
 

@@ -65,6 +65,7 @@ class DemoApplicationTests {
         candidateRepository.saveAll(List.of(candidate1, candidate2));
         Thread.sleep(3000);
         List<SearchResult> results = freeTextSearch.findByFreeText("find me a SW engineer", 20);
+        assertEquals(2, results.size());
         SearchResult searchResult = results.get(0);
         assertEquals(String.valueOf(candidate1.getId()), searchResult.entityId());
         assertEquals(candidate1.getClass().getName(), searchResult.entityClass());
