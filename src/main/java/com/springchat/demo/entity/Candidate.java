@@ -25,7 +25,7 @@ public class Candidate {
         this.lastName = lastName;
     }
 
-    protected Candidate() {
+    public Candidate() {
         //JPA
     }
 

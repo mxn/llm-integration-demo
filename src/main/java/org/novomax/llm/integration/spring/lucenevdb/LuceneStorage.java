@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -149,6 +150,17 @@ public class LuceneStorage implements VectorStorage {
         document.add(new StringField(MD5_TEXT_HASH_FIELD_NAME, getMd5Hash(text), Field.Store.YES));
         document.add(new KnnFloatVectorField(EMBEDDING_FIELD_NAME, embedding));
         return document;
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        if (indexWriter.get() != null && indexWriter.get().isOpen()) {
+            try {
+                indexWriter.get().close();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
     }
 
     record SearchResultImpl(String entityClass, String entityId, float score) implements SearchResult {
