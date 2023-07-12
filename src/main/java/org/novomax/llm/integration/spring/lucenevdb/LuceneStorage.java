@@ -4,12 +4,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.KnnFloatVectorField;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.MMapDirectory;
 import org.novomax.llm.integration.SearchResult;
 import org.novomax.llm.integration.VectorStorage;
@@ -38,6 +36,9 @@ public class LuceneStorage implements VectorStorage {
     private static Logger LOGGER = LoggerFactory.getLogger(LuceneStorage.class);
     private final Path luceneIndexDirectory;
     private final AtomicReference<IndexWriter> indexWriter = new AtomicReference<>();
+
+    private final AtomicReference<SearcherManager> searchManager = new AtomicReference<>();
+
 
     public LuceneStorage(
             @Value("${org.novomax.llm.integration.spring.lucenevdb.uri:lucene_storage}")
@@ -84,7 +85,7 @@ public class LuceneStorage implements VectorStorage {
     @Override
     public void upcert(String entityClass, String entityId, String text, double[] embedding) {
         try {
-            IndexWriter indexWriter = createIndexWriter();
+            IndexWriter indexWriter = getIndexWriter();
             deleteWithIndexWriter(indexWriter, entityClass, entityId);
             indexWriter.addDocument(createDocument(entityClass, entityId, getMd5Hash(text), castToFloatArray(embedding)));
             indexWriter.commit();
@@ -96,7 +97,7 @@ public class LuceneStorage implements VectorStorage {
     @Override
     public void delete(String entityClass, String entityId) {
         try {
-            IndexWriter indexWriter = createIndexWriter();
+            IndexWriter indexWriter = getIndexWriter();
             deleteWithIndexWriter(indexWriter, entityClass, entityId);
             indexWriter.commit();
         } catch (IOException e) {
@@ -114,7 +115,7 @@ public class LuceneStorage implements VectorStorage {
         }
     }
 
-    private IndexWriter createIndexWriter() throws IOException {
+    private IndexWriter getIndexWriter() throws IOException {
         if (indexWriter.get() == null || !indexWriter.get().isOpen()) {
             indexWriter.set(new IndexWriter(new MMapDirectory(luceneIndexDirectory),
                     new IndexWriterConfig()));
@@ -135,9 +136,11 @@ public class LuceneStorage implements VectorStorage {
 
     private IndexSearcher getIndexSearcher() {
         try {
-            FSDirectory fsDirectory = MMapDirectory.open(luceneIndexDirectory);
-            DirectoryReader directoryReader = DirectoryReader.open(fsDirectory);
-            return new IndexSearcher(directoryReader);
+            if (searchManager.get() == null) {
+                searchManager.set(new SearcherManager(getIndexWriter(), null));
+            }
+            searchManager.get().maybeRefresh();
+            return searchManager.get().acquire();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

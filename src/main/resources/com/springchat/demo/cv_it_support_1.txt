@@ -1,7 +1,7 @@
-Emily Johnson
+John George
 456 Oak Street, City, State, ZIP
 Phone: (555) 123-4567
-Email: emily.johnson@email.com
+Email: John.George@email.com
 
 Objective:
 Results-driven and detail-oriented professional seeking a challenging position in the field of software development, leveraging my strong programming skills and problem-solving abilities.

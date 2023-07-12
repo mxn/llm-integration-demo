@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.converter.SimpleMessageConverter;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 @Configuration
@@ -28,10 +30,15 @@ public class AppConfig {
     @Bean
     @Profile("demo")
     CommandLineRunner init() {
+        Candidate candidate1 = new Candidate("John", "George");
+        candidate1.setResume(readResourceAsString("cv_it_support_1.txt"));
+        Candidate candidate2 = new Candidate("Aline", "Barbie");
+        candidate2.setResume(readResourceAsString("cv_mkt_specialist_2.txt"));
         candidateRepository.saveAll( //
-                Arrays.asList(new Candidate("Max", "Nov"), //
-                        new Candidate("John", "George"), //
-                        new Candidate("Aline", "Barbie")
+                Arrays.asList( //
+                        candidate1, //
+                        candidate2,
+                        new Candidate("Max", "Nov")
                 ));
         return args -> logger.warn("Hello World!");
     }
@@ -45,5 +52,14 @@ public class AppConfig {
     @Bean
     public MessageConverter messageConverter() {
         return new SimpleMessageConverter();
+    }
+
+    public String readResourceAsString(String resourceName) {
+        try {
+            byte[] fileData = FileCopyUtils.copyToByteArray(this.getClass().getResourceAsStream(resourceName));
+            return new String(fileData);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
