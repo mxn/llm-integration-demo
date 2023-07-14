@@ -27,7 +27,7 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.google.cloud:spring-cloud-gcp-starter'
     implementation 'com.vaadin:vaadin-spring-boot-starter'
@@ -35,11 +35,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-artemis'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.1.1'
     implementation 'org.apache.activemq:artemis-jakarta-client:2.28.0'
 // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
     // https://mvnrepository.com/artifact/org.apache.lucene/lucene-core
-	implementation 'org.apache.lucene:lucene-core:9.7.0+knn2048'
+    implementation 'org.apache.lucene:lucene-core:9.7.0+knn2048'
+    implementation 'ognl:ognl:3.3.4'
     testImplementation 'junit:junit:4.13.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

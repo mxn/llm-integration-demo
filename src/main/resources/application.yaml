@@ -11,10 +11,14 @@ spring:
     driverClassName: org.h2.Driver
 vaadin:
   url-mapping: /gui/*
+
 org:
   novomax:
     llm:
       integration:
+        ui:
+          searchOneMapping:
+            "[com.springchat.demo.entity.Candidate]": /gui/candidate-detail/{0}
         spring:
           openai:
             urlExternalEmbedService: https://api.openai.com/v1/embeddings
