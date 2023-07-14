@@ -21,13 +21,14 @@ public class CandidateListView extends VerticalLayout {
 
     public CandidateListView(CandidateService candidateService) {
         this.candidateService = candidateService;
+        setWidthFull();
         addButton.addClickListener(event -> addCandidate());
-
         grid.setColumns("firstName", "lastName", "email");
         grid.setItems(getAllCandidates());
         grid.addComponentColumn(this::createButtonsLayout);
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
         add(grid, addButton);
+
     }
 
     private List<Candidate> getAllCandidates() {

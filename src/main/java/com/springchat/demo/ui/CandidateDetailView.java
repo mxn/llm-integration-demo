@@ -6,6 +6,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEvent;
@@ -63,7 +64,9 @@ public class CandidateDetailView extends VerticalLayout implements HasUrlParamet
             resume.setValue(cleanNullInStr(candidate.getResume()));
             resume.setWidthFull();
             resume.setEnabled(false);
-            add(firstNameParagraph, lastNameParagraph, emailParagraph, resume, buttonToList, buttonToEdit);
+            add(new HorizontalLayout(buttonToList, buttonToEdit), //
+                    new HorizontalLayout(firstNameParagraph, lastNameParagraph), //
+                    emailParagraph, resume);
         } else {
             clearCandidateDetails();
         }

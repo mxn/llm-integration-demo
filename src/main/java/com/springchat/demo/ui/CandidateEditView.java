@@ -5,6 +5,7 @@ import com.springchat.demo.services.CandidateService;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -32,8 +33,11 @@ public class CandidateEditView extends VerticalLayout implements HasUrlParameter
 
     public CandidateEditView(CandidateService candidateService) {
         this.candidateService = candidateService;
+        setWidthFull();
         FormLayout formLayout = new FormLayout();
-        formLayout.add(firstName, lastName, email, resume, saveButton, cancelButton);
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.add(saveButton, cancelButton);
+        formLayout.add(firstName, lastName, email, resume, horizontalLayout);
         saveButton.addClickListener(event -> saveCandidate());
         cancelButton.addClickListener(event -> navigateBack());
         resume.setPlaceholder("Add resume");
