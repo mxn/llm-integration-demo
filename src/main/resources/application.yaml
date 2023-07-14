@@ -19,9 +19,6 @@ org:
         ui:
           searchOneMapping:
             "[com.springchat.demo.entity.Candidate]": /gui/candidate-detail/{0}
-        spring:
-          openai:
-            urlExternalEmbedService: https://api.openai.com/v1/embeddings
 logging:
   level:
     org:

@@ -16,7 +16,7 @@ public class LlmServiceOpenAi implements LlmService {
     private final RestTemplate restTemplateOpenAi;
 
     public LlmServiceOpenAi(//
-                            @Value("${org.novomax.llm.integration.spring.openai.urlExternalEmbedService}")
+                            @Value("${org.novomax.llm.integration.spring.openai.urlExternalEmbedService:https://api.openai.com/v1/embeddings}")
                             String urlExternalEmbedService,
                             @Qualifier(LLM_OPENAI_QUALIFIER)
                             RestTemplate restTemplateOpenAi) {
