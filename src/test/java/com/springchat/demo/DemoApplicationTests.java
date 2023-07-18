@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.novomax.llm.integration.AiService;
 import org.novomax.llm.integration.LlmService;
 import org.novomax.llm.integration.SearchResult;
-import org.novomax.llm.integration.spring.CosineDistanceFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

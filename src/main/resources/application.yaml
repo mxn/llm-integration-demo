@@ -21,7 +21,10 @@ org:
             "[com.springchat.demo.entity.Candidate]": /gui/candidate-detail/{0}
 logging:
   level:
+    com:
+      springchat: debug
     org:
+      springframework: debug
       apache:
         hc:
           client5: debug

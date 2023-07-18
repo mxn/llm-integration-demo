@@ -1,4 +1,4 @@
-package org.novomax.llm.integration.spring;
+package com.springchat.demo;
 
 public class CosineDistanceFunction {
     public static double cosineDistance(double[] field, double[] array) {

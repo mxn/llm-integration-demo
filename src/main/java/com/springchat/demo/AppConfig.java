@@ -2,16 +2,12 @@ package com.springchat.demo;
 
 import com.springchat.demo.entity.Candidate;
 import com.springchat.demo.entity.CandidateRepository;
-import jakarta.jms.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.messaging.converter.MessageConverter;
-import org.springframework.messaging.converter.SimpleMessageConverter;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
@@ -41,17 +37,6 @@ public class AppConfig {
                         new Candidate("Max", "Nov")
                 ));
         return args -> logger.warn("Hello World!");
-    }
-
-
-    @Bean
-    public JmsTemplate jmsTemplate(ConnectionFactory factory) {
-        return new JmsTemplate(factory);
-    }
-
-    @Bean
-    public MessageConverter messageConverter() {
-        return new SimpleMessageConverter();
     }
 
     public String readResourceAsString(String resourceName) {
