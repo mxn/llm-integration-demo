@@ -24,10 +24,10 @@ logging:
     com:
       springchat: debug
     org:
-      springframework: debug
+      springframework: info
       apache:
         hc:
-          client5: debug
+          client5: info
       novomax: debug
 
 

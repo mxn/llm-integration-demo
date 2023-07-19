@@ -3,9 +3,9 @@ package com.springchat.demo;
 import com.springchat.demo.entity.Candidate;
 import com.springchat.demo.entity.CandidateRepository;
 import org.junit.jupiter.api.Test;
-import org.novomax.llm.integration.AiService;
-import org.novomax.llm.integration.LlmService;
-import org.novomax.llm.integration.SearchResult;
+import org.novomax.llm.integration.api.LlmIntegrationService;
+import org.novomax.llm.integration.api.LlmService;
+import org.novomax.llm.integration.api.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,8 +27,7 @@ class DemoApplicationTests {
     private CandidateRepository candidateRepository;
 
     @Autowired
-    private AiService freeTextSearch;
-
+    private LlmIntegrationService freeTextSearch;
 
     @Test
     void contextLoads() {
