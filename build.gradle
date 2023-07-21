@@ -47,6 +47,15 @@ dependencyManagement {
 	}
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs ".secrets/"
+		}
+	}
+
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

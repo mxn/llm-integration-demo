@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      "optional:file:./.secret.properties"
+      "optional:classpath:/.secret.properties"
   profiles:
     active: demo
   datasource:
