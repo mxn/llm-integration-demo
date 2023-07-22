@@ -1,11 +1,8 @@
 package com.springchat.demo.entity;
 
 import jakarta.persistence.*;
-import org.novomax.llm.integration.spring.client.LlmText;
-import org.novomax.llm.integration.spring.client.TextUpdateListener;
 
 @Entity
-@EntityListeners({TextUpdateListener.class})
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -61,7 +58,6 @@ public class Candidate {
         this.email = email;
     }
 
-    @LlmText
     public String getResume() {
         return resume;
     }

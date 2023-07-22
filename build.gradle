@@ -30,7 +30,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.vaadin:vaadin-spring-boot-starter'
-	implementation 'org.novomax:llm-integration-all-in-one-spring-boot-starter:0.0.1-SNAPSHOT'
 	testImplementation 'junit:junit:4.13.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

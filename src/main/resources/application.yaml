@@ -12,13 +12,6 @@ spring:
 vaadin:
   url-mapping: /gui/*
 
-org:
-  novomax:
-    llm:
-      integration:
-        ui:
-          searchOneMapping:
-            "[com.springchat.demo.entity.Candidate]": /gui/candidate-detail/{0}
 logging:
   level:
     com:
