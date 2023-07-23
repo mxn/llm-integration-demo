@@ -40,7 +40,7 @@ public class CandidateListView extends VerticalLayout {
     }
 
     private HorizontalLayout createButtonsLayout(Candidate candidate) {
-        Button viewButton = new Button("View Detail", event -> navigateToCandidateDetailView(candidate));
+        Button viewButton = new Button("Details", event -> navigateToCandidateDetailView(candidate));
         Button editButton = new Button("Edit", event -> navigateToCandidateEditView(candidate));
         Button deleteButton = new Button("Delete", event -> deleteCandidate(candidate));
 
