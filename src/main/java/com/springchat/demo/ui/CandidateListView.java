@@ -12,7 +12,7 @@ import com.vaadin.flow.router.Route;
 import java.util.List;
 
 
-@Route(RouteConstants.CANDIDATE_LIST)
+@Route("candidate-list")
 public class CandidateListView extends VerticalLayout {
     private final CandidateService candidateService; // Assuming CandidateService handles fetching candidates
 
@@ -36,9 +36,7 @@ public class CandidateListView extends VerticalLayout {
     }
 
     private void addCandidate() {
-        // Redirect to the add candidate form or handle the logic to add a candidate
-        // e.g., getUI().ifPresent(ui -> ui.navigate("add-candidate"));
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_EDIT));
+        getUI().ifPresent(ui -> ui.navigate(CandidateEditView.class));
     }
 
     private HorizontalLayout createButtonsLayout(Candidate candidate) {
@@ -50,11 +48,11 @@ public class CandidateListView extends VerticalLayout {
     }
 
     private void navigateToCandidateDetailView(Candidate candidate) {
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_DETAIL + "/" + candidate.getId()));
+        getUI().ifPresent(ui -> ui.navigate(CandidateDetailView.class, candidate.getId()));
     }
 
     private void navigateToCandidateEditView(Candidate candidate) {
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_EDIT + "/" + candidate.getId()));
+        getUI().ifPresent(ui -> ui.navigate(CandidateEditView.class, candidate.getId()));
     }
 
     private void deleteCandidate(Candidate candidate) {

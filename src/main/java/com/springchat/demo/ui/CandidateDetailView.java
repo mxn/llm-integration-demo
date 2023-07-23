@@ -14,7 +14,9 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 
-@Route(value = RouteConstants.CANDIDATE_DETAIL)
+import java.util.Optional;
+
+@Route(value = "candidate-detail/:id?")
 public class CandidateDetailView extends VerticalLayout implements HasUrlParameter<Long> {
     private final CandidateService candidateService;
     private final Paragraph firstNameParagraph = new Paragraph();
@@ -33,22 +35,24 @@ public class CandidateDetailView extends VerticalLayout implements HasUrlParamet
     }
 
     private void navigateToEdit(final ClickEvent<Button> buttonClickEvent) {
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_EDIT + "/" + candidateId));
+        getUI().ifPresent(ui -> ui.navigate(CandidateEditView.class, candidateId));
     }
 
     private void navigateToListView(ClickEvent<Button> buttonClickEvent) {
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_LIST));
+        getUI().ifPresent(ui -> ui.navigate(CandidateListView.class));
     }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
-        if (parameter != null) {
-            candidateId = parameter;
+        Optional<Long> optionalId = UiHelper.getId(event);
+        if (optionalId.isPresent()) {
+            candidateId = optionalId.get();
             showCandidateDetails();
         } else {
             clearCandidateDetails();
         }
     }
+
 
     private String cleanNullInStr(final String string) {
         return string == null ? "" : string;

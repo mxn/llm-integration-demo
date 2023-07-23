@@ -16,7 +16,9 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "candidate-edit")
+import java.util.Optional;
+
+@Route(value = "candidate-edit/:id?")
 public class CandidateEditView extends VerticalLayout implements HasUrlParameter<Long> {
     static final int MIN_HEIGHT_RESUME_TEXT_AREA = 20;
     private final CandidateService candidateService;
@@ -53,8 +55,9 @@ public class CandidateEditView extends VerticalLayout implements HasUrlParameter
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
-        if (parameter != null) {
-            candidateId = parameter;
+        Optional<Long> id = UiHelper.getId(event);
+        if (id.isPresent()) {
+            candidateId = id.get();
             showCandidateDetails();
         } else {
             clearCandidateDetails();
@@ -83,6 +86,6 @@ public class CandidateEditView extends VerticalLayout implements HasUrlParameter
     }
 
     private void navigateBack() {
-        getUI().ifPresent(ui -> ui.navigate(RouteConstants.CANDIDATE_LIST));
+        getUI().ifPresent(ui -> ui.navigate(CandidateListView.class));
     }
 }
